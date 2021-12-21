@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>W3Gym</title>
+    <script src="https://www.gstatic.com/firebasejs/8.6.3/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.3/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.3/firebase-messaging.js"></script>
+<!--    <script src="/static/js/firebase-messaging-sw.js"></script>-->
+
+
+
+
+     <script>
+        var firebaseConfig = {
+            apiKey: "AIzaSyBnmD2URVN8pqTYuW-xgPsvMvN-2v3ocmg",
+
+            authDomain: "test-my-app-a433c.firebaseapp.com",
+
+            projectId: "test-my-app-a433c",
+
+            storageBucket: "test-my-app-a433c.appspot.com",
+
+            messagingSenderId: "401577186421",
+
+            appId: "1:401577186421:web:722211e07d85a17566543c",
+
+            measurementId: "G-HN5RKM9E5Z"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        firebase.analytics();
+
+        const messaging = firebase.messaging();
+        console.log(messaging.getToken())
+        messaging.getToken({ vapidKey: 'BNU8fEveFY2vTEPn3TJ4VrIANJFEIJRyXa9g1y5ciQqD0MZBz83ARF5ObC4S6yEhBo1CKtqCwkLvtYVVTyjwSY4' }).then((currentToken) => {
+        if (currentToken) {
+          document.getElementById("token").value = currentToken;
+          console.log(currentToken);
+        } else {
+          console.log('No registration token available. Request permission to generate one.');
+
+        }
+      }).catch((err) => {
+        console.log('An error occurred while retrieving token. ', err);
+      });
+
+
+        messaging
+         .requestPermission()
+         .then(function () {
+           console.log("Notification permission granted.");
+           return messaging.getToken()
+         })
+         .catch(function (err) {
+         console.log("Unable to get permission to notify.", err);
+       });
+
+
+        messaging.onMessage((payload) => {
+        console.log('Message received. ', payload);
+        document.getElementById("notification").innerHTML = payload.notification.title;
+        document.getElementById("notification_body").innerHTML = payload.notification.body;
+      });
+
+
+
+      </script>
+
+
+</head>
+
+<body>
+<center>
+    <h1>Hello, Device token is...</h1>
+    <textarea id="token" rows="10" cols="50" style="text-align: center; resize: none;" disabled></textarea>
+    <h5 id="notification"></h5>
+    <p id="notification_body"></p>
+</center>
+</body>
+
+</html>
